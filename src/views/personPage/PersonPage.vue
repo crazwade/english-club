@@ -1,5 +1,5 @@
 <template>
-  <div class="container" >
+  <div class="containerPost" >
     <el-card class="overflow-auto">
       <div class="card-content" v-html="content"></div>
     </el-card>
@@ -7,7 +7,7 @@
   <el-divider class="custom-divider">
     <el-icon><star-filled /></el-icon>
   </el-divider>
-  <div class="container">
+  <div class="containerPost">
     <div class="demo-image__lazy">
       <el-image
         v-for="(url, index) in imageUrl"
@@ -22,24 +22,33 @@
 </template>
 
 <script lang="ts" setup>
-import { StarFilled } from '@element-plus/icons-vue'
 import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { StarFilled } from '@element-plus/icons-vue'
 import { use as useHttp } from '../../api/request';
 
 const imageUrl = ref([]);
 const content = ref('');
 
+const route = useRoute();
+const postId = route.query.postId as string
+
+function formatString(input: string): string {
+  const lines = input.split(/\r?\n/);
+  const formattedLines = lines.map(line => `<p>${line}</p>`).join('<br>');
+  return formattedLines;
+}
+
+
 const getInfo = async () => {
   try {
-    const response = await useHttp().get('/getInfo', {
+    const response = await useHttp().get('/english/getInfo.php', {
       params: {
-        id: '0',
-        account: 'jacky',
-        theme: 'jacky_toc',
+        postId,
       },
     });
-    imageUrl.value = response.data.files.map((base64Image: string) => `data:image/jpeg;base64,${base64Image}`);
-    content.value = response.data.content;
+    imageUrl.value = response.data.files;
+    content.value = formatString(response.data.content);
   } catch (error) {
     console.error(error);
   }
@@ -59,21 +68,23 @@ onMounted(() => {
   border: 3px solid gray;
   border-radius: 5px;
 }
-.container {
+.containerPost {
   border: 5px solid gray;;
   border-radius: 5px;
   padding: 5px;
   margin: 10px 0;
-  height: 45vh;
+  height: 50%;
   overflow-y: auto;
 }
 .demo-image__lazy {
-  height: 45vh;
+  height: 45%;
 }
 .demo-image__lazy .el-image {
   display: block;
   min-height: 200px;
+  max-width: 500px;
   margin-bottom: 10px;
+  margin: 0 auto;
 }
 .demo-image__lazy .el-image:last-child {
   margin-bottom: 0;

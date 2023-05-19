@@ -21,7 +21,13 @@ const router = useRouter();
 const isHomePage = computed(() => route.name === 'HomePage');
 
 const goToHomePage = () => {
-  if (route.name === 'PersonPage' || 'EditPage') {
+  if (route.name === 'PersonPage') {
+    const themeId = route.query.themeId as string;
+    router.push({
+      name: 'ThemePage',
+      query: { themeId },
+    });
+  } else if (route.name === 'EditPage') {
     const themeId = route.query.themeId as string;
     router.push({
       name: 'ThemePage',
@@ -30,6 +36,7 @@ const goToHomePage = () => {
   } else {
     router.push({ name: 'HomePage' });
   }
+
 };
 
 </script>

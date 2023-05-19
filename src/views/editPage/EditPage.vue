@@ -1,122 +1,123 @@
 <template>
+  <Result :visible="resultData.visible" :type="resultData.type" :msg="resultData.msg" @close="handleCloseResult"/>
+
   <div>
-    <input type="file" multiple ref="fileInput" @change="handleFileUpload" />
-    <button @click="uploadImages">Upload Images</button>
+    <el-upload
+      action="/uploadInfo"
+      :before-upload="beforeUpload"
+      multiple
+    >
+      <el-button type="primary">選擇檔案</el-button>
+    </el-upload>
+    <el-input v-model="formData.poster" placeholder="你的名字"></el-input>
+    <el-input type="textarea" v-model="formData.content" placeholder="你的文章" rows="10"></el-input>
+    <el-button type="success" @click="uploadInfo" class=" mt-3">上傳</el-button>
     <div>
-      <div v-for="previewUrl in previewUrls" :key="previewUrl">
-        <img :src="previewUrl" width="100" height="100" />
-      </div>
+      <template v-for="file in previewFiles" :key="file">
+        -
+        <img :src="file" width="200" height="100" />
+      </template>
     </div>
-  </div>
-  <div>
-    <textarea v-model="articleContent" rows="5" placeholder="請輸入文章內容"></textarea>
-    <button @click="uploadArticle">上傳文章</button>
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+<script setup lang="ts">
+import { ref, reactive } from 'vue';
 import { use as useHttp } from '../../api/request';
+import { useRoute, useRouter } from 'vue-router';
+import axios from 'axios';
+import Result from '../../components/Result.vue';
 
-const imageUrl = ref([]);
-const htmlContent = ref('');
+const route = useRoute();
+const router = useRouter();
+
 const files = ref<File[]>([]);
-const previewUrls = ref<File[]>([]);
-const fileInputRef = ref<HTMLInputElement | null>(null);
-const articleContent = ref('');
+  const resultData = reactive({
+  type: 'success',
+  msg: '',
+  visible: false,
+})
 
-const handleFileUpload = () => {
-  const files = fileInputRef.value?.files;
-  previewUrls.value = [];
+// 處理 emit 的事件
+const handleCloseResult = () => {
+  resultData.visible = false;
+  const themeId = route.query.themeId as string;
+  router.push({
+    name: 'ThemePage',
+    query: { themeId },
+  });
+};
 
-  if (files) {
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const reader = new FileReader();
+interface FormData {
+  themeId: string;
+  content: string;
+  poster: string;
+  files: File[];
+}
 
-      reader.onload = (event) => {
-        const result = event.target?.result;
-        if (typeof result === 'string') {
-          previewUrls.value.push(result);
-        }
-      };
+const formData:FormData = reactive({
+  themeId: '',
+  content: '',
+  poster: '',
+  files: [],
+})
 
-      reader.readAsDataURL(file);
+const beforeUpload = (file: File) => {
+  files.value.push(file);
+  // 預覽圖片
+  const reader = new FileReader();
+  reader.onload = () => {
+    if (typeof reader.result === 'string') {
+      previewFiles.value.push(reader.result);
     }
-  }
+  };
+  reader.readAsDataURL(file);
+  return false; // 取消自動上傳
 };
 
+const previewFiles = ref<string[]>([]);
 
-const uploadArticle = async () => {
-  try {
-    const response = await useHttp().post('/uploadTxt', { content: articleContent.value });
-    htmlContent.value = response.data;
-    // 在這裡處理上傳後的回應
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-const uploadImages = async () => {
-  const formData = new FormData();
-  for (let i = 0; i < files.value.length; i++) {
-    formData.append('images', files.value[i]);
-  }
+const uploadInfo = async () => {
+  formData.themeId = route.query.themeId as string;
 
   try {
-    const response = await useHttp().post('/uploadImg', formData);
-    console.log(response.data);
-    // 在這裡處理上傳後的回應
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-const getImages = async () => {
-  try {
-    const response = await useHttp().get('/getImg', {
-      params: {
-        account: 'jacky',
-        theme: 'jacky_toc',
+    const fileData = new FormData();
+    files.value.forEach((file: File) => {
+      fileData.append('files[]', file);
+    });
+    fileData.append('themeId', formData.themeId);
+    fileData.append('content', formData.content);
+    fileData.append('poster', formData.poster);
+    // TODO
+    const response = await axios.post('/api/english/uploadInfo.php', fileData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
       },
     });
-    imageUrl.value = response.data.map((base64Image: string) => `data:image/jpeg;base64,${base64Image}`);
-    // 在這裡處理上傳後的回應
+
+    //@ts-ignore
+    resultData.msg = response.message;
+    resultData.type = 'success';
+    resultData.visible = true;
+    // formData.files = Array.from(files.value);
+    // const response = await useHttp().post('/english/uploadInfo.php', formData, {
+    //   headers: {
+    //     'Content-Type': 'multipart/form-data',
+    //   },
+    // });
+    console.log(response);
   } catch (error) {
-    console.error(error);
+    //@ts-ignore
+    resultData.msg = error.message;
+    resultData.type = 'error';
+    resultData.visible = true;
   }
 };
-
-onMounted(() => {
-  getImages();
-});
-
 </script>
 
-<style scoped>
-.card-content {
-  text-align: left;
-}
-.custom-divider {
-  border: 3px solid gray;
-  border-radius: 5px;
-}
-.container {
-  border: 5px solid gray;;
-  border-radius: 5px;
-  padding: 5px;
-  margin: 10px 0;
-}
-.demo-image__lazy {
-  height: 50vh;
-  overflow-y: auto;
-}
-.demo-image__lazy .el-image {
-  display: block;
-  min-height: 200px;
-  margin-bottom: 10px;
-}
-.demo-image__lazy .el-image:last-child {
-  margin-bottom: 0;
+<style>
+.el-upload--text {
+  display: inline-block;
+  margin-right: 10px;
 }
 </style>

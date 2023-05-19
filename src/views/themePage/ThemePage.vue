@@ -1,12 +1,14 @@
 <template>
-  <el-tag class="ml-2" type="warning" size="large" effect="dark">{{ themeName }}</el-tag>
+  <Result :visible="resultData.visible" :type="resultData.type" :msg="resultData.msg" @close="handleCloseResult"/>
+
+  <el-tag class="ml-2" type="warning" size="large" effect="dark">{{ themeTitle }}</el-tag>
   <div class="h-full flex flex-col overflow-auto mt-5">
     <!-- 主要顯示區域 -->
     <div class="overflow-auto">
       <el-row>
         <el-col :span="12" v-for="(item, index) in data" :key="index">
-          <el-card style="margin: 5px" shadow="always" @click="intoPerson(item.userId)" class="cursor-pointer">
-            {{ item.name }}
+          <el-card style="margin: 5px" shadow="always" @click="intoPerson(item.postId)" class="cursor-pointer">
+            {{ item.poster }}
           </el-card>
         </el-col>
       </el-row>
@@ -30,16 +32,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '../../router/index';
 import { use as useHttp } from '../../api/request';
+import Result from '../../components/Result.vue';
+
+interface ListData {
+  postId: number,
+  poster: string,
+}
 
 const route = useRoute();
 const themeId = route.query.themeId as string
 
-const data = ref([]);
-const themeName = ref('');
+const data = ref<ListData[]>([]);
+const themeTitle = ref('');
+const resultData = reactive({
+  type: 'success',
+  msg: '',
+  visible: false,
+})
+
+// 處理 emit 的事件
+const handleCloseResult = () => {
+  resultData.visible = false;
+};
 
 const newTheme = () => {
   router.push({
@@ -48,12 +66,11 @@ const newTheme = () => {
     });
 }
 
-const intoPerson = (userId: number) => {
+const intoPerson = (postId: number) => {
   router.push({
     name: 'PersonPage',
-    query: { themeId: themeId.toString(), userId: userId.toString() },
+    query: { themeId: themeId.toString(), postId: postId.toString() },
   });
-  console.log(userId);
 }
 
 onMounted(async() => {
@@ -63,12 +80,26 @@ onMounted(async() => {
     });
   } else {
     try {
-      const response = await useHttp().post('/getTheme', { themeId });
-      const { list, theme } = response.data;
+      const response = await useHttp().get('/english/getAllArticle.php', {
+        params: {
+          themeId,
+        }
+      });
+      //@ts-ignore
+      if (!response.success) {
+      //@ts-ignore
+        resultData.msg = response.message;
+        resultData.type = 'error';
+        resultData.visible = true;
+      }
+      const { list, themeName } = response.data;
       data.value = list;
-      themeName.value = theme;
+      themeTitle.value = themeName;
     } catch (error) {
-      console.error(error);
+      //@ts-ignore
+      resultData.msg = error.message;
+      resultData.type = 'error';
+      resultData.visible = true;
     }
   }
   const contain = document.getElementById('contain');

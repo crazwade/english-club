@@ -26,7 +26,7 @@
 import { computed, ref } from "vue";
 import Header from './Header.vue';
 
-const height = computed(() => "calc( 100vh - 60px )");
+const height = computed(() => "calc( 100% - 60px )");
 const showMenu = ref(false);
 
 </script>

@@ -15,7 +15,7 @@ async function main() {
     withCredentials: true,
     timeout: 30000,
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
     },
 
     transformRequest: [
@@ -29,7 +29,7 @@ async function main() {
           return newData;
         }
 
-        if (headers?.["Content-Type"] === "application/form-data") {
+        if (headers?.["Content-Type"] === "multipart/form-data") {
           const formData = new FormData();
 
           Object.keys(data).forEach((key) => {

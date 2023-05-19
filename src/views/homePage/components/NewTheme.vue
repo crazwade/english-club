@@ -12,13 +12,13 @@
       :label-position="'left'"
     >
       <el-form-item label="主題">
-        <el-input v-model="formData.title" placeholder="請輸入主題"></el-input>
+        <el-input v-model="formData.themeName" placeholder="請輸入主題" required></el-input>
       </el-form-item>
       <el-form-item label="出題者">
-        <el-input v-model="formData.creator" placeholder="請輸入出題者"></el-input>
+        <el-input v-model="formData.creator" placeholder="請輸入出題者" required></el-input>
       </el-form-item>
       <el-form-item label="舉辦日期">
-        <el-date-picker v-model="formData.date" type="date" placeholder="請選擇日期"></el-date-picker>
+        <el-date-picker v-model="formData.holdTime" type="date" placeholder="請選擇日期" required></el-date-picker>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer flex justify-center mt-5">
@@ -37,15 +37,15 @@ const props = defineProps({
 });
 
 interface FormData {
-  title: string;
+  themeName: string;
   creator: string;
-  date: string;
+  holdTime: string;
 }
 
 const formData: FormData = reactive({
-  title: '',
+  themeName: '',
   creator: '',
-  date: ''
+  holdTime: ''
 });
 
 const emits = defineEmits(['close', 'submit']);
@@ -55,9 +55,9 @@ const handleClose = () => {
 };
 
 const handleSubmit = () => {
-  const dateObj = new Date(formData.date);
+  const dateObj = new Date(formData.holdTime);
   const timestamp = dateObj.getTime();
-  const formDataWithTimestamp = { ...formData, date: timestamp.toString() };
+  const formDataWithTimestamp = { ...formData, holdTime: timestamp.toString() };
   emits('submit', formDataWithTimestamp);
 };
 </script>
