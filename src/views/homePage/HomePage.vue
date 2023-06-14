@@ -40,6 +40,7 @@
 import { ref, onMounted, reactive } from 'vue';
 import NewTheme from './components/NewTheme.vue';
 import router from '../../router/index';
+//@ts-ignore
 import { use as useHttp } from '../../api/request';
 import Result from '../../components/Result.vue';
 
@@ -81,6 +82,7 @@ const handleCloseResult = () => {
 };
 
 /** 新增主題 */
+//@ts-ignore
 const handleSubmitDialog = async (formData: FormData) => {
   // try {
   //   const response = await useHttp().post('/english/uploadTheme.php', formData);

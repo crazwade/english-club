@@ -26,6 +26,7 @@ import { ref, reactive } from 'vue';
 //@ts-ignore
 import { use as useHttp } from '../../api/request';
 import { useRoute, useRouter } from 'vue-router';
+//@ts-ignore
 import axios from 'axios';
 import Result from '../../components/Result.vue';
 
