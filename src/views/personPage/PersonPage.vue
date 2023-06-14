@@ -2,13 +2,18 @@
   <div class="slider-demo-block px-1">
     <el-slider v-model="viewHeight" />
   </div>
-  <div class="containerPost" :style="{ height: `${articleHeight}%` }">
+  <div class="containerPost" :style="{ height: `${articleHeight}%` }" v-if="articleHeight > 5">
     <el-card class="overflow-auto">
       <div class="card-content" v-html="content"></div>
     </el-card>
   </div>
-  <div class="containerPost" :style="{ height: `${imageHeight}%` }">
+  <div class="containerPost" :style="{ height: `${imageHeight}%` }" v-if="imageHeight > 5">
     <div class="demo-image__lazy">
+      <el-skeleton style="width: 240px" :loading="loading" animated :count="3">
+        <template #template>
+          <el-skeleton-item variant="image" style="width: 400px; height: 267px" />
+        </template>
+      </el-skeleton>
       <el-image
         v-for="(url, index) in imageUrl"
         :key="index"
@@ -24,10 +29,13 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import loadImages from '../../common/loadImages';
+import { ElMessage } from 'element-plus'
 import { use as useHttp } from '../../api/request';
 
 const imageUrl = ref([]);
 const content = ref('');
+const loading = ref(true);
 const viewHeight = ref(50);
 const articleHeight = computed(() => 46 + viewHeight.value - 50);
 const imageHeight = computed(() => 46 + 50 - viewHeight.value);
@@ -49,8 +57,21 @@ const getInfo = async () => {
         postId,
       },
     });
+
+    const res = await loadImages(response.data.files);
+
+    if (res) {
+      imageUrl.value = response.data.files;
+      content.value = formatString(response.data.content);
+      loading.value = false;
+      return;
+    }
+
+    ElMessage.error('有張圖片壞掉了');
+    // @ts-ignore
     imageUrl.value = response.data.files;
     content.value = formatString(response.data.content);
+    loading.value = false;
   } catch (error) {
     console.error(error);
   }
