@@ -82,19 +82,22 @@ const handleCloseResult = () => {
 
 /** 新增主題 */
 const handleSubmitDialog = async (formData: FormData) => {
-  try {
-    const response = await useHttp().post('/english/uploadTheme.php', formData);
-    //@ts-ignore
-    resultData.msg = response.message;
-    resultData.type = 'success';
-    resultData.visible = true;
-    await getAllTheme();
-  } catch (error) {
-    //@ts-ignore
-    resultData.msg = error.message;
-    resultData.type = 'error';
-    resultData.visible = true;
-  }
+  // try {
+  //   const response = await useHttp().post('/english/uploadTheme.php', formData);
+  //   //@ts-ignore
+  //   resultData.msg = response.message;
+  //   resultData.type = 'success';
+  //   resultData.visible = true;
+  //   await getAllTheme();
+  // } catch (error) {
+  //   //@ts-ignore
+  //   resultData.msg = error.message;
+  //   resultData.type = 'error';
+  //   resultData.visible = true;
+  // }
+  resultData.msg = '僅供展示';
+  resultData.type = 'warning';
+  resultData.visible = true;
   isVisible.value = false;
 };
 
@@ -120,23 +123,39 @@ const data = ref<ListData[]>([]);
 
 /** 取得全部主題 */
 const getAllTheme = async () => {
-  try {
-    const response = await useHttp().get('/english/getAllTheme.php');
+  data.value = [
+    {
+      themeId: '2',
+      themeName: '旅遊',
+      holdTime: '1683820800000',
+      creator: '小羊',
+      participants: '5',
+    },
+    {
+      themeId: '3',
+      themeName: '初戀',
+      holdTime: '1684425600000',
+      creator: 'Paul',
+      participants: '5',
+    }
+  ]
+  // try {
+  //   const response = await useHttp().get('/english/getAllTheme.php');
 
-    const apiData: ListData[] = response.data.map((item: any) => ({
-      themeId: item.themeId,
-      themeName: item.themeName,
-      holdTime: item.holdTime,
-      creator: item.creator,
-    }));
+  //   const apiData: ListData[] = response.data.map((item: any) => ({
+  //     themeId: item.themeId,
+  //     themeName: item.themeName,
+  //     holdTime: item.holdTime,
+  //     creator: item.creator,
+  //   }));
 
-    data.value = apiData;
-  } catch (error) {
-    //@ts-ignore
-    resultData.msg = error.message;
-    resultData.type = 'error';
-    resultData.visible = true;
-  }
+  //   data.value = apiData;
+  // } catch (error) {
+  //   //@ts-ignore
+  //   resultData.msg = error.message;
+  //   resultData.type = 'error';
+  //   resultData.visible = true;
+  // }
 }
 
 onMounted(async () => {

@@ -35,7 +35,7 @@
 import { ref, onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '../../router/index';
-import { use as useHttp } from '../../api/request';
+// import { use as useHttp } from '../../api/request';
 import Result from '../../components/Result.vue';
 
 interface ListData {
@@ -79,28 +79,56 @@ onMounted(async() => {
       name: 'HomePage',
     });
   } else {
-    try {
-      const response = await useHttp().get('/english/getAllArticle.php', {
-        params: {
-          themeId,
-        }
-      });
-      //@ts-ignore
-      if (!response.success) {
-      //@ts-ignore
-        resultData.msg = response.message;
-        resultData.type = 'error';
-        resultData.visible = true;
+    if (themeId === '2') {
+      const response = {
+        list: [
+          {
+            postId: 6,
+            poster: "Jacky"
+          },
+        ],
+        themeName: "旅遊",
       }
-      const { list, themeName } = response.data;
+      const { list, themeName } = response;
       data.value = list;
       themeTitle.value = themeName;
-    } catch (error) {
-      //@ts-ignore
-      resultData.msg = error.message;
-      resultData.type = 'error';
-      resultData.visible = true;
     }
+    if (themeId === '3') {
+      const response = {
+        list: [
+          {
+            postId: 7,
+            poster: "JJ"
+          }
+        ],
+        themeName: "初戀"
+      }
+      const { list, themeName } = response;
+      data.value = list;
+      themeTitle.value = themeName;
+    }
+    // try {
+    //   const response = await useHttp().get('/english/getAllArticle.php', {
+    //     params: {
+    //       themeId,
+    //     }
+    //   });
+    //   //@ts-ignore
+    //   if (!response.success) {
+    //   //@ts-ignore
+    //     resultData.msg = response.message;
+    //     resultData.type = 'error';
+    //     resultData.visible = true;
+    //   }
+    //   const { list, themeName } = response.data;
+    //   data.value = list;
+    //   themeTitle.value = themeName;
+    // } catch (error) {
+    //   //@ts-ignore
+    //   resultData.msg = error.message;
+    //   resultData.type = 'error';
+    //   resultData.visible = true;
+    // }
   }
   const contain = document.getElementById('contain');
   if (contain === null) {

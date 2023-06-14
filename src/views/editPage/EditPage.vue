@@ -81,37 +81,40 @@ const previewFiles = ref<string[]>([]);
 const uploadInfo = async () => {
   formData.themeId = route.query.themeId as string;
 
-  try {
-    const fileData = new FormData();
-    files.value.forEach((file: File) => {
-      fileData.append('files[]', file);
-    });
-    fileData.append('themeId', formData.themeId);
-    fileData.append('content', formData.content);
-    fileData.append('poster', formData.poster);
-    // TODO
-    const response = await axios.post('/api/english/uploadInfo.php', fileData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+  // try {
+  //   const fileData = new FormData();
+  //   files.value.forEach((file: File) => {
+  //     fileData.append('files[]', file);
+  //   });
+  //   fileData.append('themeId', formData.themeId);
+  //   fileData.append('content', formData.content);
+  //   fileData.append('poster', formData.poster);
+  //   // TODO
+  //   const response = await axios.post('/api/english/uploadInfo.php', fileData, {
+  //     headers: {
+  //       'Content-Type': 'multipart/form-data',
+  //     },
+  //   });
 
-    //@ts-ignore
-    resultData.msg = response.message;
-    resultData.type = 'success';
-    resultData.visible = true;
-    // formData.files = Array.from(files.value);
-    // const response = await useHttp().post('/english/uploadInfo.php', formData, {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data',
-    //   },
-    // });
-  } catch (error) {
-    //@ts-ignore
-    resultData.msg = error.message;
-    resultData.type = 'error';
-    resultData.visible = true;
-  }
+  //   //@ts-ignore
+  //   resultData.msg = response.message;
+  //   resultData.type = 'success';
+  //   resultData.visible = true;
+  //   // formData.files = Array.from(files.value);
+  //   // const response = await useHttp().post('/english/uploadInfo.php', formData, {
+  //   //   headers: {
+  //   //     'Content-Type': 'multipart/form-data',
+  //   //   },
+  //   // });
+  // } catch (error) {
+  //   //@ts-ignore
+  //   resultData.msg = error.message;
+  //   resultData.type = 'error';
+  //   resultData.visible = true;
+  // }
+  resultData.msg = '僅供展示';
+  resultData.type = 'warning';
+  resultData.visible = true;
 };
 </script>
 
