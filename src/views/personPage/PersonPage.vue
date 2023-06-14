@@ -2,12 +2,12 @@
   <div class="slider-demo-block px-1">
     <el-slider v-model="viewHeight" />
   </div>
-  <div class="containerPost" :style="{ height: `${articleHeight}%` }">
+  <div class="containerPost" :style="{ height: `${articleHeight}%` }" v-if="articleHeight > 5">
     <el-card class="overflow-auto">
       <div class="card-content" v-html="content"></div>
     </el-card>
   </div>
-  <div class="containerPost" :style="{ height: `${imageHeight}%` }">
+  <div class="containerPost" :style="{ height: `${imageHeight}%` }" v-if="imageHeight > 5">
     <div class="demo-image__lazy">
       <el-skeleton style="width: 240px" :loading="loading" animated :count="3">
         <template #template>
