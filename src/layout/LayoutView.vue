@@ -4,11 +4,11 @@
     <Header />
   </el-container>
   <el-container>
-    <div class="absolute w-full mt-[70px]" :style="{ height: height }">
+    <div class="absolute w-full mt-[65px]" :style="{ height: height }">
       <!-- Main -->
       <div
         class="absolute inset-0 p-0 w-full h-full"
-        :style="{ height: height, zIndex: showMenu ? 0 : 1 }"
+        :style="{ zIndex: showMenu ? 0 : 1 }"
       >
         <el-main class="p-0 w-full h-full">
           <div class="h-full">

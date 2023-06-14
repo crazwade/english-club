@@ -23,6 +23,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
+//@ts-ignore
 import { use as useHttp } from '../../api/request';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
@@ -105,7 +106,6 @@ const uploadInfo = async () => {
     //     'Content-Type': 'multipart/form-data',
     //   },
     // });
-    console.log(response);
   } catch (error) {
     //@ts-ignore
     resultData.msg = error.message;

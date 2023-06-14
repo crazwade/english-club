@@ -1,13 +1,13 @@
 <template>
-  <div class="containerPost" >
+  <div class="slider-demo-block px-1">
+    <el-slider v-model="viewHeight" />
+  </div>
+  <div class="containerPost" :style="{ height: `${articleHeight}%` }">
     <el-card class="overflow-auto">
       <div class="card-content" v-html="content"></div>
     </el-card>
   </div>
-  <el-divider class="custom-divider">
-    <el-icon><star-filled /></el-icon>
-  </el-divider>
-  <div class="containerPost">
+  <div class="containerPost" :style="{ height: `${imageHeight}%` }">
     <div class="demo-image__lazy">
       <el-image
         v-for="(url, index) in imageUrl"
@@ -22,13 +22,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { StarFilled } from '@element-plus/icons-vue'
 import { use as useHttp } from '../../api/request';
 
 const imageUrl = ref([]);
 const content = ref('');
+const viewHeight = ref(50);
+const articleHeight = computed(() => 46 + viewHeight.value - 50);
+const imageHeight = computed(() => 46 + 50 - viewHeight.value);
 
 const route = useRoute();
 const postId = route.query.postId as string
@@ -64,16 +66,12 @@ onMounted(() => {
 .card-content {
   text-align: left;
 }
-.custom-divider {
-  border: 3px solid gray;
-  border-radius: 5px;
-}
 .containerPost {
   border: 5px solid gray;;
   border-radius: 5px;
   padding: 5px;
   margin: 10px 0;
-  height: 50%;
+  height: 46%;
   overflow-y: auto;
 }
 .demo-image__lazy {

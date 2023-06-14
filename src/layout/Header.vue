@@ -1,5 +1,5 @@
 <template>
-  <el-header class="bg-blue-800 h-16 fixed top-0 inset-x-0">
+  <el-header class="bg-blue-800 fixed top-0 inset-x-0 h-[65px]">
     <div class="flex h-16 items-center">
       <button v-if="!isHomePage" class="mr-2 flex items-center justify-center" @click="goToHomePage">
         <el-icon><ArrowLeftBold /></el-icon>
