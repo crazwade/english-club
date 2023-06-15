@@ -3,7 +3,7 @@
     v-model="props.visible"
     :show-close="false"
   >
-    <el-row>
+    <el-row style="justify-content: center">
       <el-col :sm="12" :lg="6" v-if="props.type === 'success'">
         <el-result
           icon="success"
