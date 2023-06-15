@@ -4,6 +4,7 @@
     v-model="props.isVisible"
     @close="handleClose"
     title="新增主題"
+    class=" w-[90%]"
   >
     <el-form
       ref="form"
