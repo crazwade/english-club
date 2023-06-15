@@ -14,7 +14,7 @@ export async function getTheme (): Promise<{
   data: List[]
 }> {
   try {
-    const response = await useHttp().get('/english/getAllTheme.php');
+    const response = await useHttp().get('/getAllTheme.php');
 
     // 在這裡處理 response 的數據格式，並組織成您希望的格式
     const formattedData = {

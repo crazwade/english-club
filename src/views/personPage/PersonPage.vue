@@ -52,7 +52,7 @@ function formatString(input: string): string {
 
 const getInfo = async () => {
   try {
-    const response = await useHttp().get('/english/getInfo.php', {
+    const response = await useHttp().get('/getInfo.php', {
       params: {
         postId,
       },

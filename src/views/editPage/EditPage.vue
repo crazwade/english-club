@@ -90,7 +90,7 @@ const uploadInfo = async () => {
     fileData.append('content', formData.content);
     fileData.append('poster', formData.poster);
     // TODO
-    const response = await axios.post('/english/uploadInfo.php', fileData, {
+    const response = await axios.post('/uploadInfo.php', fileData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -101,7 +101,7 @@ const uploadInfo = async () => {
     resultData.type = 'success';
     resultData.visible = true;
     // formData.files = Array.from(files.value);
-    // const response = await useHttp().post('/english/uploadInfo.php', formData, {
+    // const response = await useHttp().post('/uploadInfo.php', formData, {
     //   headers: {
     //     'Content-Type': 'multipart/form-data',
     //   },
