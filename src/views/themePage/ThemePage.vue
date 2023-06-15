@@ -6,9 +6,18 @@
     <!-- 主要顯示區域 -->
     <div class="overflow-auto">
       <el-row>
-        <el-col :span="12" v-for="(item, index) in data" :key="index">
-          <el-card style="margin: 5px" shadow="always" @click="intoPerson(item.postId)" class="cursor-pointer">
-            {{ item.poster }}
+        <el-col :span="12" v-for="(item, index) in data" :key="index" class="relative">
+          <div
+            class="absolute bg-gray-400 top-[50%] rounded-full text-gray-700 left-[80%] w-[40px] h-[40px] translate-x-[-50%] translate-y-[-50%] flex justify-center items-center cursor-pointer hover:text-red-500"
+            v-on:mouseover="item.deleteHover = true"
+            v-on:mouseleave="item.deleteHover = false"
+          >
+            <el-icon @click="dialogCheck(item.postId)" class=" text-2xl">
+              <Delete />
+            </el-icon>
+          </div>
+          <el-card style="margin: 5px" shadow="always" @click="intoPerson(item.postId)" class="cursor-pointer hover:bg-orange-400" id="el-card-body" :class="{ ' bg-red-500': item.deleteHover }">
+            <div>{{ item.poster }}</div>
           </el-card>
         </el-col>
       </el-row>
@@ -27,8 +36,24 @@
         <el-icon size="30" class="text-white"><DocumentAdd /></el-icon>
       </div>
     </div>
-
   </div>
+
+  <el-dialog
+    v-model="dialogVisible"
+    title="確認"
+    width="80%"
+    :before-close="handleDialogClose"
+  >
+    <span>確定要刪除嗎?</span>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false">先不要</el-button>
+        <el-button @click="deletePost" id="del">
+          刪除
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
@@ -41,6 +66,7 @@ import Result from '../../components/Result.vue';
 interface ListData {
   postId: number,
   poster: string,
+  deleteHover: boolean,
 }
 
 const route = useRoute();
@@ -53,11 +79,18 @@ const resultData = reactive({
   msg: '',
   visible: false,
 })
+const dialogVisible = ref(false);
+const seletPostId = ref(-1);
 
 // 處理 emit 的事件
 const handleCloseResult = () => {
   resultData.visible = false;
 };
+
+const handleDialogClose = () => {
+  seletPostId.value = -1;
+  dialogVisible.value = false;
+}
 
 const newTheme = () => {
   router.push({
@@ -73,41 +106,83 @@ const intoPerson = (postId: number) => {
   });
 }
 
+const dialogCheck = (postId: number) => {
+  seletPostId.value = postId;
+  dialogVisible.value = true;
+}
+
+const deletePost = (async () => {
+  if (seletPostId.value === -1) {
+    resultData.msg = '不明錯誤請重試';
+    resultData.type = 'error';
+    resultData.visible = true;
+    return;
+  }
+
+  try {
+    const response = await useHttp().post('/deletePost.php', { postId: seletPostId.value });
+    //@ts-ignore
+    if (!response.success) {
+    //@ts-ignore
+      resultData.msg = response.message;
+      resultData.type = 'error';
+      resultData.visible = true;
+      themeTitle.value = 'Error';
+      handleDialogClose();
+      return;
+    }
+    await init();
+    handleDialogClose();
+    return;
+  } catch (error) {
+    //@ts-ignore
+    resultData.msg = error.message;
+    resultData.type = 'error';
+    resultData.visible = true;
+    handleDialogClose();
+    return;
+  }
+});
+
+const init = (async() => {
+  try {
+    const response = await useHttp().get('/getAllArticle.php', {
+      params: {
+        themeId,
+      }
+    });
+    //@ts-ignore
+    if (!response.success) {
+    //@ts-ignore
+      resultData.msg = response.message;
+      resultData.type = 'error';
+      resultData.visible = true;
+      data.value = [];
+      themeTitle.value = 'Error';
+      return;
+    }
+
+    const { list, themeName } = response.data;
+    data.value = list.map((item: any) => ({ ...item, deleteHover: false }));
+    themeTitle.value = themeName;
+
+    return;
+  } catch (error) {
+    //@ts-ignore
+    resultData.msg = error.message;
+    resultData.type = 'error';
+    resultData.visible = true;
+    return;
+  }
+});
+
 onMounted(async() => {
   if (!themeId) {
     router.push({
       name: 'HomePage',
     });
   } else {
-    try {
-      const response = await useHttp().get('/english/getAllArticle.php', {
-        params: {
-          themeId,
-        }
-      });
-      //@ts-ignore
-      if (!response.success) {
-      //@ts-ignore
-        resultData.msg = response.message;
-        resultData.type = 'error';
-        resultData.visible = true;
-        data.value = [];
-        themeTitle.value = 'Error';
-        return;
-      }
-
-      const { list, themeName } = response.data;
-      data.value = list;
-      themeTitle.value = themeName;
-
-      return;
-    } catch (error) {
-      //@ts-ignore
-      resultData.msg = error.message;
-      resultData.type = 'error';
-      resultData.visible = true;
-      return;
-    }
+    await init();
   }
   const contain = document.getElementById('contain');
   if (contain === null) {
@@ -120,3 +195,10 @@ onMounted(async() => {
   }
 });
 </script>
+
+<style>
+#del {
+  background-color: #EF5350 !important;
+  color: white !important;
+}
+</style>
