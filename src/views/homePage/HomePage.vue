@@ -13,7 +13,7 @@
             <h2 class="mb-2 items-center"> {{ item.themeName }} </h2>
             <p class="mb-2"> 舉辦時間: {{ timeStampToData(item.holdTime) }} </p>
             <p class="mb-2">{{ item.creator }} 出題</p>
-            <p class="mb-2">參與人數: {{ item.participants }}</p>
+            <p class="mb-2">投稿數量: {{ item.participants }}</p>
           </div>
         </el-card>
       </div>
@@ -83,7 +83,7 @@ const handleCloseResult = () => {
 /** 新增主題 */
 const handleSubmitDialog = async (formData: FormData) => {
   try {
-    const response = await useHttp().post('/english/uploadTheme.php', formData);
+    const response = await useHttp().post('/uploadTheme.php', formData);
     //@ts-ignore
     resultData.msg = response.message;
     resultData.type = 'success';
@@ -118,10 +118,31 @@ const timeStampToData = (timestamp: string) => {
 
 const data = ref<ListData[]>([]);
 
+const getParticipants = async (themeId: any) => {
+  try {
+    const response = await useHttp().get('/getAllArticle.php', {
+      params: {
+        themeId,
+      }
+    });
+
+    //@ts-ignore
+    if (!response.success) {
+      return 0;
+    }
+
+    //@ts-ignore
+    return response.data.list.length;
+  } catch (error: any) {
+    console.log(error);
+    return 0;
+  }
+};
+
 /** 取得全部主題 */
 const getAllTheme = async () => {
   try {
-    const response = await useHttp().get('/english/getAllTheme.php');
+    const response = await useHttp().get('/getAllTheme.php');
 
     //@ts-ignore
     if (!response.success) {
@@ -133,12 +154,13 @@ const getAllTheme = async () => {
       return;
     }
 
-    const apiData: ListData[] = response.data.map((item: any) => ({
+    const apiData: ListData[] = await Promise.all(response.data.map(async (item: any) => ({
       themeId: item.themeId,
       themeName: item.themeName,
       holdTime: item.holdTime,
       creator: item.creator,
-    }));
+      participants: await getParticipants(item.themeId), // 使用 await 等待非同步函式的結果
+    })));
 
     data.value = apiData;
     return;
