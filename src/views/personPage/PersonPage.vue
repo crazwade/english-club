@@ -72,8 +72,10 @@ const getInfo = async () => {
     imageUrl.value = response.data.files;
     content.value = formatString(response.data.content);
     loading.value = false;
+    return;
   } catch (error) {
     console.error(error);
+    return;
   }
 }
 

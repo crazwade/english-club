@@ -123,6 +123,16 @@ const getAllTheme = async () => {
   try {
     const response = await useHttp().get('/english/getAllTheme.php');
 
+    //@ts-ignore
+    if (!response.success) {
+      //@ts-ignore
+      resultData.msg = response.message;
+      resultData.type = 'error';
+      resultData.visible = true;
+      data.value = [];
+      return;
+    }
+
     const apiData: ListData[] = response.data.map((item: any) => ({
       themeId: item.themeId,
       themeName: item.themeName,
@@ -131,11 +141,13 @@ const getAllTheme = async () => {
     }));
 
     data.value = apiData;
+    return;
   } catch (error) {
     //@ts-ignore
     resultData.msg = error.message;
     resultData.type = 'error';
     resultData.visible = true;
+    return;
   }
 }
 

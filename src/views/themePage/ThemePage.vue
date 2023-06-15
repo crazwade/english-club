@@ -91,15 +91,22 @@ onMounted(async() => {
         resultData.msg = response.message;
         resultData.type = 'error';
         resultData.visible = true;
+        data.value = [];
+        themeTitle.value = 'Error';
+        return;
       }
+
       const { list, themeName } = response.data;
       data.value = list;
       themeTitle.value = themeName;
+
+      return;
     } catch (error) {
       //@ts-ignore
       resultData.msg = error.message;
       resultData.type = 'error';
       resultData.visible = true;
+      return;
     }
   }
   const contain = document.getElementById('contain');

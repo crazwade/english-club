@@ -53,16 +53,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
 
 const props = defineProps({
   type: String,
   msg: String,
   visible: Boolean,
-});
-
-onMounted(() => {
-  console.log(props);
 });
 
 const emits = defineEmits(['close']);
