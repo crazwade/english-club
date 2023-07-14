@@ -90,7 +90,7 @@ const uploadInfo = async () => {
     fileData.append('content', formData.content);
     fileData.append('poster', formData.poster);
     // TODO
-    const response = await axios.post('/uploadInfo.php', fileData, {
+    const response = await axios.post('http://192.168.86.52/english/uploadInfo.php', fileData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
