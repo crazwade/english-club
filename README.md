@@ -1,5 +1,40 @@
-# Vue 3 + TypeScript + Vite + Element-plus + TailWind
+# 專案名稱
 
-SKW 英文社讀書會使用的專案
+ShareHub 英文文章/圖片分享平台
 
-API: http://192.168.20.189:3000/xUoD0VwUTrW1LWdmUCepxw
+## 介紹
+
+ShareHub 是一個英文文章和圖片的分享平台，讓使用者可以輕鬆分享和探索有趣的內容。該平台提供三個主要畫面：
+
+- 首頁：在這個畫面上，使用者可以新增主題或點擊已存在的主題進入主題頁。主題頁會顯示相關主題下的投稿列表。
+
+- 主題頁：使用者可以在這個畫面上新增投稿或點擊已存在的投稿進入個人投稿頁。個人投稿頁會顯示相關投稿的英文文章和分享的圖片。
+
+- 個人投稿頁：該頁面分成上下兩個區塊。上方展示英文文章，下方展示分享的圖片。在header的地方有一個scrollbar，使用者可以調整文章區或是圖片區的大小，以達到讓使用者自行調整想看到範圍的功能。
+
+## 技術棧
+
+- Vue 3
+- TypeScript
+- Vite
+- Eslint
+- TailwindCSS
+- Element Plus
+
+## 開始使用
+
+### 安裝相依套件
+
+```bash
+npm install
+```
+
+## 開發模式
+```bash
+npm run dev
+```
+
+## 編譯打包
+```bash
+npm run build
+```

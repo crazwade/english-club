@@ -1,5 +1,5 @@
 <template>
-  <Result :visible="resultData.visible" :type="resultData.type" :msg="resultData.msg" @close="handleCloseResult"/>
+  <Result :visible.sync="resultData.visible" :type="resultData.type" :msg="resultData.msg" :title="resultData.title" @close="handleCloseResult"/>
 
   <el-tag class="ml-2" type="warning" size="large" effect="dark">{{ themeTitle }}</el-tag>
   <div class="h-full flex flex-col overflow-auto mt-5">
@@ -78,6 +78,7 @@ const resultData = reactive({
   type: 'success',
   msg: '',
   visible: false,
+  title: '',
 })
 const dialogVisible = ref(false);
 const seletPostId = ref(-1);
@@ -169,9 +170,17 @@ const init = (async() => {
     return;
   } catch (error) {
     //@ts-ignore
-    resultData.msg = error.message;
+    resultData.title = error.message;
+    resultData.msg = '使用假資料替代';
     resultData.type = 'error';
     resultData.visible = true;
+    data.value = [
+      {
+        "postId": 1,
+        "poster": "Jacky",
+        "deleteHover": false
+      }
+    ];
     return;
   }
 });

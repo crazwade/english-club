@@ -1,5 +1,5 @@
 <template>
-  <Result :visible="resultData.visible" :type="resultData.type" :msg="resultData.msg" @close="handleCloseResult"/>
+  <Result :visible.sync="resultData.visible" :type="resultData.type" :msg="resultData.msg" :title="resultData.title" @close="handleCloseResult"/>
 
   <NewTheme :is-visible="isVisible" @close="handleCloseDialog" @submit="handleSubmitDialog" />
 
@@ -61,6 +61,7 @@ const resultData = reactive({
   type: 'success',
   msg: '',
   visible: false,
+  title: '',
 })
 
 // 定義與設置 props
@@ -134,8 +135,10 @@ const getParticipants = async (themeId: any) => {
     //@ts-ignore
     return response.data.list.length;
   } catch (error: any) {
-    console.log(error);
-    return 0;
+    resultData.msg = `Error Message: ${error.message}, 使用假資料替代`;
+    resultData.type = 'error';
+    resultData.visible = true;
+    return 1;
   }
 };
 
@@ -166,9 +169,19 @@ const getAllTheme = async () => {
     return;
   } catch (error) {
     //@ts-ignore
-    resultData.msg = error.message;
+    resultData.title = error.message;
+    resultData.msg = '使用假資料替代';
     resultData.type = 'error';
     resultData.visible = true;
+    data.value = [
+      {
+        "themeId": "1",
+        "themeName": "旅遊經驗",
+        "holdTime": "1689868800000",
+        "creator": "Jacky",
+        "participants": '1'
+      }
+    ];
     return;
   }
 }

@@ -1,13 +1,13 @@
 <template>
   <el-dialog
-    v-model="props.visible"
+    :model-value="props.visible"
     :show-close="false"
   >
     <el-row style="justify-content: center">
       <el-col :sm="12" :lg="6" v-if="props.type === 'success'">
         <el-result
           icon="success"
-          title="Success Tip"
+          :title="props.title"
           :sub-title="props.msg"
         >
           <template #extra>
@@ -18,7 +18,7 @@
       <el-col :sm="12" :lg="6" v-if="props.type === 'warning'">
         <el-result
           icon="warning"
-          title="Warning Tip"
+          :title="props.title"
           :sub-title="props.msg"
         >
           <template #extra>
@@ -29,7 +29,7 @@
       <el-col :sm="12" :lg="6" v-if="props.type === 'error'">
         <el-result
           icon="error"
-          title="Error Tip"
+          :title="props.title"
           :sub-title="props.msg"
         >
           <template #extra>
@@ -40,7 +40,7 @@
       <el-col :sm="12" :lg="6" v-if="props.type === 'info'">
         <el-result
           icon="info"
-          title="Info Tip"
+          :title="props.title"
           :sub-title="props.msg"
         >
           <template #extra>
@@ -58,6 +58,7 @@ const props = defineProps({
   type: String,
   msg: String,
   visible: Boolean,
+  title: String,
 });
 
 const emits = defineEmits(['close']);
