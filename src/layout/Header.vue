@@ -5,7 +5,7 @@
         <el-icon><ArrowLeftBold /></el-icon>
       </button>
       <div class="flex items-center justify-center flex-grow">
-        <h1 class="font-bold text-xl text-white">SAKAWA Tech. Co.</h1>
+        <h1 class="font-bold text-xl text-white">ShareHub</h1>
       </div>
     </div>
   </el-header>
